@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Coin</title>
+
+    <link rel="stylesheet" href="/spinner.css">
+    <script src="/tailwind.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/x-icon" href="/media/img/favicon.ico">
+    <script src="/pre-alpine.js"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/robin-kit/kit@latest/dist/main.min.js"></script>
+    <script src="/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/alpine-core.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        textBing: 'white',
+                        textSmall: 'black',
+                        bgPri: 'blue',
+                        bgSec: 'red'
+                    }
+                }
+            }
+        }
+    </script>
+    <Style>
+        body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #121212;
+}
+
+.crypto-background {
+  position: relative;
+  width: 100vw;
+  height: 100%;
+  background:url('/media/img/2.jpg');
+  overflow: hidden;
+}
+
+/* Glowing Circles */
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(58, 123, 213, 0.8), rgba(58, 123, 213, 0.1));
+  animation: float 6s ease-in-out infinite;
+}
+
+.circle.large {
+  width: 400px;
+  height: 400px;
+  top: 20%;
+  left: 15%;
+}
+
+.circle.small {
+  width: 200px;
+  height: 200px;
+  bottom: 30%;
+  right: 20%;
+}
+
+/* Floating Lines */
+.glowing-line {
+  position: absolute;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to bottom, rgba(58, 123, 213, 1), rgba(58, 123, 213, 0));
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 3s infinite;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.card-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 5%;
+}
+.crypto-card-alternate{
+    padding: 17px!important;
+}
+.crypto-card {
+    position: relative;
+    /* width: 300px; */
+    color: white;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    /* backdrop-filter: blur(10px); */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* display: flex
+; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* text-align: center; */
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: linear-gradient(135deg, #1a1a1a, #333333);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.wui-card {
+    max-width: var(--w3m-modal-width);
+    width: 100%;
+    position: relative;
+    animation: zoom-in 0.2s var(--wui-ease-out-power-2);
+    animation-fill-mode: backwards;
+    outline: none;
+    position: relative;
+    /* width: 300px; */
+    color: white;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* display: flex
+; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* text-align: center; */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+/* Gradient Border */
+.crypto-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0px;
+  padding: 2px; /* Gradient width */
+
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+/* Card Hover Effect */
+
+
+/* Card Text */
+.crypto-card h2 {
+  font-size: 1.5rem;
+  color: #ffffff;
+ 
+}
+
+.crypto-card p {
+    font-size: 1rem;
+    color: #e5e5e5;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+/* Button Styles */
+.crypto-card button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.earning-container{
+    flex-direction: row!important;
+    justify-content: space-between!important;
+    margin-left: 10px!important;
+    align-items: center!important;
+}
+.earning-total{
+    font-size: 1.5rem!important;
+}
+.earning-heading{
+    font-size: 1.3rem!important;
+}
+.earning-borrow-btn{
+    width: 200px!important;
+    margin-left: auto;
+}
+.connect-btn:hover{
+    opacity: 0.9;
+}
+    </Style>
+</head>
+
+
+
+<body x-data="data" class="crypto-background bg-cover bg-center">
+    <div class="circle large"></div>
+    <div class="circle small"></div>
+    <div class="glowing-line"></div>
+    <div class="w-full h-[100%] bg-opacity-90 backdrop-blur-sm overflow-y-scroll">
+     
+        <!-- before page load loading pop up start -->
+        <div class="crypto-card crypto-cardDialog bg-neutral-800 fixed flex align-items-middle place-items-center justify-center inset-0 flex align-items-center justify-center place-items-center"
+            x-show="!loaded || !$store.wallet.loadedKit">
+            <span class="loader"></span>
+        </div>
+        <!-- before page load loading pop up end -->
+
+
+        <template x-if="loaded && $store.wallet.loadedKit">
+            <div class="">
+                <!-- navbar start -->
+                <div class="w-full border-b p-4">
+                    <div class="max-w-4xl mx-auto w-full flex justify-between align-items-middle place-items-center">
+                        <div class="flex-1 flex justify-start gap-1">
+                            <img class="w-8 h-8" src="/media/icons/zusd.png" alt="">
+                            <h1 class="text-lg font-bold " style="color:white;">ZeroLoan</h1>
+                        </div>
+
+                        <div
+                            class="hidden justify-between md:flex overflow-hidden gap-1 z-50 text-gray-400 font-bold">
+                            <template x-for="navLink in navLinks" x-key="navLink">
+                                <button @click="()=>{navigate(navLink); showMenu=false;}"
+                                    :class="selectedNav == navLink ? 'border-b border-b-2 text-blue-400': 'text-white'"
+                                    class="p-2 border-blue-400" x-text="navLink"></button>
+                            </template>
+                        </div>
+
+                        <div class="flex-1 flex">
+                            <div class="flex-1 flex justify-end">
+                                <template x-if="!$store.wallet.data.address">
+                                    <button @click="window.defaultConnector"
+                                        class="connect-btn p-1 px-4 text-sm font-bold bg-blue-400 text-white rounded-2xl" @click="async()=>{
+                                        await checkAndConnectWallet()
+                                    }">Connect</button>
+                                </template>
+                                <template x-if="$store.wallet.data.address">
+                                    <span
+                                        class="crypto-card crypto-cardDialog bg-neutral-800 bg-opacity-20 p-1 px-4 text-sm font-bold text-xs font-bold text-green-500 rounded-2xl text-center flex justify-center align-items-center"
+                                        x-text="$store.wallet.data.address.slice(0,6) + '...' + $store.wallet.data.address.slice(-6)"></span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="md:hidden w-full justify-between flex overflow-hidden gap-1 z-50 px-4 mt-2 text-gray-400 font-bold">
+                    <template x-for="navLink in navLinks" x-key="navLink">
+                        <button @click="()=>{navigate(navLink); showMenu=false;}"
+                            :class="selectedNav == navLink ? 'border-b border-b-2 text-green-400': ''"
+                            class="p-2 border-blue-400" x-text="navLink"></button>
+                    </template>
+                </div>
+                <!-- navbar end -->
+
+                <div class="max-w-4xl mx-auto w-full p-6" x-data="{showMenu: false}">
+                    <!-- Home page start-->
+                    <template x-if="selectedNav === 'Home'">
+                        <div class="">
+                            <!-- a short blog of what the plaform is about and how to earn from it -->
+                            <div class="p-4 crypto-card rounded-2xl">
+                                <h1 class="text-2xl font-bold" style="padding-bottom: 14px;">Welcome to ZeroLoan</h1>
+                                <p>ZeroLoan is a platform that allows you to borrow loan without a collateral. You can
+                                    borrow a loan of up to $100,000.00 without a collateral. The borrowed loan can only
+                                    be
+                                    spent on this platform to trade and earn more. You are required to pay back the loan
+                                    within
+                                    24 hours of borrowing.</p>
+                                <p>How to use loan?</p>
+                                <p>1. Borrow loan</p>
+                                <p>2. Trade with the borrowed loan</p>
+                                <p>3. Deposit the USDT worth of the borrowed into your wallet</p>
+                                <p>4. Pay back the borrowed loan</p>
+                                <p>5. Withdraw your earnings</p>
+                            </div>
+
+                            <!-- advantages -->
+
+                            <div class="mt-6">
+                                <h2 class="text-2xl font-bold text-white">Advantages</h2>
+                                <div class="flex flex-col gap-4 mt-4">
+                                    <div class="crypto-card p-4 rounded-2xl">
+                                        <h3 class="text-lg font-bold">No Collateral</h3>
+                                        <p>You can borrow a loan of up to $100,000.00 without a collateral</p>
+                                    </div>
+                                    <div class="crypto-card p-4 rounded-2xl">
+                                        <h3 class="text-lg font-bold">Low Interest Rate</h3>
+                                        <p>Our interest rate is very low compared to other platforms</p>
+                                    </div>
+                                    <div class="crypto-card p-4 rounded-2xl">
+                                        <h3 class="text-lg font-bold">Fast Approval</h3>
+                                        <p>Our loan approval process is very fast</p>
+                                    </div>
+                                    <div class="crypto-card p-4 rounded-2xl">
+                                        <h3 class="text-lg font-bold">No Hidden Charges</h3>
+                                        <p>We do not have any hidden charges</p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- faqs -->
+                            <div class="mt-6" x-data="{faqs:[
+                            {question: 'What is ZeroLoan?', answer: 'ZeroLoan is a platform that allows you to borrow loan without a collateral. You can borrow a loan of up to $100,000.00 without a collateral. The borrowed loan can only be spent on this platform to trade and earn more. You are required to pay back the loan within 24 hours of borrowing.'},
+                            {question: 'How to use loan?', answer: '1. Borrow loan\n2. Trade with the borrowed loan\n3. Deposit the USDT worth of the borrowed into your wallet\n4. Pay back the borrowed loan\n5. Withdraw your earnings'},
+                            {question: 'What is the minimum amount I can borrow?', answer: 'The minimum amount you can borrow is $100'},
+                            {question: 'What is the maximum amount I can borrow?', answer: 'The maximum amount you can borrow is $100,000.00'},
+                            {question: 'What is the interest rate?', answer: 'Our interest rate is very low compared to other platforms'},
+                            {question: 'How long do I have to pay back the loan?', answer: 'You are required to pay back the loan within 24 hours of borrowing'},
+                            {question: 'What happens if I fail to pay back the loan?', answer: 'If you fail to pay back the loan within 24 hours of borrowing, you will be charged a penalty fee of 10% of the borrowed amount'},
+                            {question: 'Can I borrow multiple loans?', answer: 'No, you can only borrow one loan at a time. You are required to pay back the borrowed loan before you can borrow another loan'},
+                            {question: 'Can I withdraw my earnings?', answer: 'Yes, you can withdraw your earnings after you have paid back the borrowed loan'},
+                            {question: 'Can I trade with the borrowed loan?', answer: 'Yes, you can trade with the borrowed loan on this platform'},
+                            {question: 'Can I spend the borrowed loan on other platforms?', answer: 'No, you can only spend the borrowed loan on this platform'},
+                            {question: 'Can I deposit the borrowed loan into my wallet?', answer: 'Yes, you can deposit the USDT worth of the borrowed loan into your wallet'},
+                            {question: 'Can I pay back the borrowed loan before 24 hours?', answer: 'Yes, you can pay back the borrowed loan at any time before 24 hours'},
+                            {question: 'What happens if I pay back the borrowed loan before 24 hours?', answer: 'If you pay back the borrowed loan before 24 hours, you will not be charged any penalty fee'},
+                            {question: 'What happens if I pay back the borrowed loan after 24 hours?', answer: 'If you pay back the borrowed loan after 24 hours, you will be charged a penalty fee of 10% of the borrowed amount'},
+                            ], opens:{}}">
+                                <div class="p-4 crypto-card rounded-2xl">
+                                    <h2 class="text-2xl font-bold">FAQs</h2>
+                                    <div class="flex flex-col gap-4 mt-4">
+                                        <template x-for="(faq, index) in faqs" :key="index">
+                                            <div class="crypto-card w-full p-4 rounded-2xl mb-4 bg-gray-800 text-white" x-data="{ open: false }">
+                                              <button 
+                                                @click="open = !open" 
+                                                class="flex justify-between items-center w-full"
+                                              >
+                                                <h3 class="text-lg font-bold text-left" x-text="faq.question"></h3>
+                                                <svg 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                class="h-6 w-6 transform transition-transform duration-300" 
+                                                :class="{ 'rotate-180': open }" 
+                                                fill="none" 
+                                                viewBox="0 0 24 24" 
+                                                stroke="currentColor"
+                                              >
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                              </svg>
+                                              </button>
+                                              <p x-show="open" x-text="faq.answer" class="mt-2 text-gray-300"></p>
+                                            </div>
+                                          </template>
+                                          
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </template>
+                    <!-- Home page end -->
+
+                    <!-- borrow loan section start -->
+                    <template x-if="selectedNav === 'Borrow'"
+                        x-data="{showBorrowConfirmPopup: false, amount: undefined}">
+                        <div class="">
+
+                            <div class="p-4 mb-6 crypto-card rounded-2xl">
+                                You can borrow a loan of up to $100,000.00 without a collateral. The borrowed loan can
+                                only be spent on this platform to trade and earn more. You are required to pay back the
+                                loan within 24 hours of borrowing.
+
+                                <h2 class="text-lg font-bold mt-4">How to use loan?</h2>
+                                <p>1. Borrow loan</p>
+                                <p>2. Trade with the borrowed loan</p>
+                                <p>3. Deposit the USDT worth of the borrowed into your wallet</p>
+                                <p>4. Pay back the borrowed loan</p>
+                                <p>5. Withdraw your earnings</p>
+                            </div>
+
+
+                            <div class="flex flex-col md:flex-row w-full gap-4">
+
+                                <template x-if="showBorrowConfirmPopup">
+                                    <div x-data="{hideTermsOfBorrow: false, borrowError: undefined, userHasConfirm: false}"
+                                        @click.self="()=>{showBorrowConfirmPopup = false}"
+                                        class="fixed flex align-items-middle place-items-center justify-center z-50 inset-0 crypto-card crypto-cardDialog bg-neutral-800 bg-opacity-80 p-4">
+
+
+                                        <div x-show="!hideTermsOfBorrow"
+                                            class="max-w-xl w-full mx-auto p-6 crypto-card crypto-cardDialog bg-neutral-800 text-white rounded-2xl"
+                                            x-data="{}">
+                                            <h2 class="text-3xl">Terms</h2>
+                                            <div class="mt-6 text-xl flex flex-col gap-4 font-medium">
+                                                <div class="flex justify-between align-items-center place-items-center">
+                                                    <p>I know that I will only be able to spend the borrowed coin on
+                                                        this
+                                                        platform
+                                                    </p>
+                                                    <input type="checkbox">
+                                                </div>
+                                                <div class="flex justify-between align-items-center place-items-center">
+                                                    <p
+                                                        x-text="`I will pay back the \$${amount.toLocaleString()} loan within 24 hour`">
+                                                    </p>
+                                                    <input type="checkbox">
+                                                </div>
+                                            </div>
+                                            <button @click="async()=>{
+                                                        if (borrowing) return;
+                                                        borrowing = true;
+                                                        hideTermsOfBorrow = true;
+                                                        try{
+                                                            core = window.getKitCore()
+                                                            const tx = await platformContract.borrowLoan(core.ethers.parseUnits(amount.toString(), 18));
+                                                            userHasConfirm = true;
+
+                                                            await tx.wait()
+
+                                                            // save to database
+                                                            const { data: newLoan, error } = await dbclient.from('loans').insert({
+                                                            address: await core.signer.getAddress(), data: { loan: amount, status: 0}}).select('*')
+
+                                                            if (error) {
+                                                                // do something with the error
+                                                            }
+
+                                                            // update UI
+                                                            Alpine.store('wallet').loans = [...Alpine.store('wallet').loans, newLoan[0]]
+
+                                                            // render alert
+                                                            await updateUseData()
+                                                            showBorrowConfirmPopup = false;
+                                                            Swal.fire({
+                                                            title: 'Loan Granted!',
+                                                            text: `Congratulation!\n\nYour loan of \$${amount.toLocaleString()} was granted successfully`,
+                                                            icon: 'success',
+                                                            })
+                                                            amount = undefined;
+                                                        }
+                                                        catch(e){
+                                                            borrowError = e
+                                                        }
+
+                                                        borrowing = false;
+                                                    }" class="mt-6 bg-green-400 rounded-2xl w-full p-4">Confirm
+                                                borrow</button>
+                                        </div>
+
+                                        <div x-show="hideTermsOfBorrow"
+                                            class="max-w-sm text-white crypto-card crypto-cardDialog bg-neutral-800 w-full mx-auto p-6 rounded-2xl word-wrap ">
+                                            <div x-show="borrowError === undefined"
+                                                class="flex text-white flex-col justify-center align-items-center place-items-center gap-2 crypto-card crypto-cardDialog bg-neutral-800 w-full">
+                                                <h2 class="text-2x uppercase font-bold">Borrowing</h2>
+                                                <div class="loader">
+                                                </div>
+                                                <p x-show="!userHasConfirm" class="text-sm text-center font-medium">Open
+                                                    your
+                                                    wallet
+                                                    and confirm
+                                                    the
+                                                    pop to sync
+                                                    with the smart
+                                                    contract and
+                                                    complete the borrow process</p>
+                                                <p x-show="userHasConfirm"
+                                                    class="text-sm text-green-400 text-center font-medium">
+                                                    Processing loan</p>
+
+                                            </div>
+
+                                            <div x-show="borrowError !== undefined"
+                                                class="flex text-white flex-col justify-center align-items-center place-items-center gap-2 crypto-card crypto-cardDialog bg-neutral-800 w-full overflow-scroll">
+                                                <p class="text-sm text-center font-bold text-red-400"
+                                                    x-text="borrowError?.reason||'an error occurred'">
+                                                </p>
+                                                <button @click="()=>{showBorrowConfirmPopup=false}"
+                                                    class="p-4 rounded-2xl bg-blue-400 text-white font-bold mt-4">Try
+                                                    again</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </template>
+
+
+                                <div class=" crypto-card rounded-2xl flex-1 shadow-sm shadow-gray-300 border border-gray-300 h-fit">
+                                    <h1 class="text-xl text-center p-4 font-bold uppercase" style="color:white;">Borrow
+                                        Loan</h1>
+                                    <div class="flex flex-col p-6 gap-4">
+                                        <label class="flex flex-col font-medium gap-2 relative" style="color:white;">
+                                            Amount
+                                            <div
+                                                class="flex rounded-2xl border align-items-center place-items-center p-2 bg-white">
+                                                <img src="/media/icons/zusd.png" alt="" class="w-10 h-10">
+                                                <input x-model.number="amount" inputmode="decimal" type="text"
+                                                    class="p-4 outline-none border-none font-bold text-2xl min-w-0 w-fit text-right text-black"
+                                                    placeholder="0.0">
+                                            </div>
+
+                                            <div
+                                                class="absolute pt-1 translate-y-full bottom-0 left-0 w-full flex justify-between font-medium text-sm">
+                                                <p style="color:white;">min: $100</p>
+                                                <p x-text="`max: \$${Number(100000).toLocaleString()}`"></p>
+                                                <!-- <p class="text-right" x-text="(Boolean(amount) && amount < 100) ? `min = $100`: ''">
+                                                        </p> -->
+                                            </div>
+                                        </label>
+
+                                        <button x-bind:disabled="!Boolean(amount)" @click="async ()=>{
+                                                            await checkAndConnectWallet()
+                                                            // check if user have borrowed before and
+
+                                                            const oldLoan = Number(core.ethers.formatUnits(await platformContract.getBorrowed(await core.signer.getAddress()), 18))
+                                                            if (oldLoan <= 0){
+                                                                showBorrowConfirmPopup=true
+                                                                return;
+                                                            }
+                                                            Swal.fire({
+                                                            title: 'PREVIOUS LOAN DETECTED',
+                                                            text: 'You need to pay back the previous amount(s) you are owing',
+                                                            icon: 'error',
+                                                            })
+                                                        }"
+                                            class="p-4 rounded-2xl bg-blue-400 mt-6 disabled:bg-gray-400 disabled:opacity-70">
+                                            Borrow
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <div class=" crypto-card rounded-2xl flex-1 shadow-sm shadow-gray-300 border border-gray-300 h-fit" style="min-height: 348px;">
+                                    <h1 class="text-xl text-center p-4 font-bold uppercase" style="color:white;">Loan
+                                        History</h1>
+                                    <div class="flex flex-col p-6 gap-2">
+                                        <template x-for="loan in $store.wallet.loans">
+                                            <div class="rounded-2xl overflow-hidden border" x-data="{expand: false}">
+                                                <button @click="()=>{expand=!expand}"
+                                                    class="p-4 crypto-card w-full flex justify-between font-bold">
+                                                    <h4 x-text="'#'+loan.id" class="text-blue-600"></h4>
+                                                    <span x-text="'$'+loan.data.loan"></span>
+
+                                                </button>
+                                                <template x-if="expand">
+                                                    <div
+                                                        class="flex flex-col p-4 font-medium text-gray-400 [&_span]:text-gray-900">
+                                                        <div class="flex justify-between">
+                                                            <p style="color:white;">Loan:</p>
+                                                            <span x-text="'$'+loan.data.loan"></span>
+                                                        </div>
+                                                        <div class="flex justify-between">
+                                                            <p>Borrow At:</p>
+                                                            <span
+                                                                x-text="new Date(loan.created_at).toLocaleString()"></span>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <!-- borrow loan section end -->
+
+                    <!-- arbitrage section start -->
+                    <template x-if="selectedNav === 'Arbitrage'">
+                        <div class="flex flex-col md:flex-row w-full gap-4" x-data="{
+                        trade:{
+                            trade_type: 1,
+                            min_duration: 30,
+                            max_duration: 60,
+                            selected_coin: 'zusd',
+                            amount: undefined,
+                            trads:[]
+                        },
+                        tradeFeedback: {
+                            title: '',
+                            body: ''
+                        },
+                        showCalculatedReward: false,
+                        confirmedTransaction: false
+                    }">
+
+
+                            <!-- Calculated reward pop start -->
+                            <template x-if="showCalculatedReward">
+                                <div x-data="{showTradeReviewer: true, userHasConfirm: false}"
+                                    @click.self="()=>{showCalculatedReward = false}"
+                                    class="fixed flex align-items-middle place-items-center justify-center z-50 inset-0 crypto-card crypto-cardDialog bg-neutral-800 bg-opacity-80 p-4">
+
+
+                                    <div x-show="!showTradeReviewer"
+                                        class="max-w-sm w-full mx-auto rounded-2xl crypto-card crypto-cardDialog bg-neutral-800 overflow-hidden">
+                                        <div
+                                            class="flex  p-6 justify-center flex-col align-items-center align-items-center w-full gap-4 text-center text-white">
+                                            <div class="loader mx-auto"></div>
+                                            <div class="flex flex-col w-full gap-4">
+                                                <h2 class="uppercase text-xl  font-bold " x-text="tradeFeedback.title">
+                                                </h2>
+                                                <p class="text-sm font-medium" x-text="tradeFeedback.body"></p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div x-show="showTradeReviewer"
+                                        class="max-w-sm w-full rounded-2xl p-6 crypto-card crypto-cardDialog bg-neutral-800 mx-auto">
+                                        <h2 class="uppercase text-white font-bold">Review Trade</h2>
+                                        <div class="flex flex-col mt-6 gap-2">
+                                            <div class="flex justify-between text-neutral-400">
+                                                Trade type:
+                                                <span x-text="trade.trade_type == 1 ? 'Automatic' : 'Manual'"
+                                                    class="text-white font-bold"></span>
+                                            </div>
+
+                                            <div class="flex justify-between text-neutral-400">
+                                                Min duration:
+                                                <span x-text="trade.min_duration + ' Minutes'"
+                                                    class="text-white font-bold"></span>
+                                            </div>
+                                            <div class="flex justify-between text-neutral-400">
+                                                Max duration:
+                                                <span x-text="trade.max_duration + ' Minutes'"
+                                                    class="text-white font-bold"></span>
+                                            </div>
+                                            <div class="flex justify-between text-neutral-400">
+                                                Stake:
+                                                <span x-text="trade.amount.toLocaleString()"
+                                                    class="text-white font-bold"></span>
+                                            </div>
+
+                                        </div>
+
+                                        <button @click="async()=>{
+                                    await checkAndConnectWallet()
+
+                                    if ($store.wallet.trades.length >= 5){
+                                        showCalculatedReward = false;
+                                        Swal.fire({
+                                            title: 'Trade Limit!',
+                                            text: 'You have reached the maximum trade limit. Pay your loan and withdraw your earnings and try again',
+                                            icon: 'error',
+                                        })
+                                        return;
+                                    }
+
+                                    showTradeReviewer = false;
+                                    tradeFeedback.title = 'Initializing'
+                                    tradeFeedback.body = ''
+
+                                    confirmedTransaction = false;
+                                    await updateUseData()
+                                    const address = await core.signer.getAddress()
+                                    const amount = trade.amount
+                                    const selectedCoin = trade.selected_coin
+
+                                    if (selectedCoin == 'usdt'){
+                                        if ($store.wallet.usdtBalance < amount) {
+                                            showCalculatedReward = false;
+                                            Swal.fire({
+                                                title: 'Low USDT!',
+                                                text: 'You do not have enough USDT to complete the requested trade',
+                                                icon: 'error',
+                                            })
+                                            return
+                                        }
+
+                                        if ($store.wallet.data.usdtAllowance < amount){
+                                            tradeFeedback.title = 'Approve USDT';
+                                            tradeFeedback.body = 'Open your wallet and confirm trade to initialize arbitrage';
+
+                                            try{
+                                                const tx = await usdtContract.increaseAllowance(platformContractAddress, core.ethers.parseUnits(amount.toString(), 18));
+                                                tradeFeedback.body = 'Processing approval';
+                                                await tx.wait();
+                                            }
+                                            catch(e){
+                                                // do something with the error
+                                                showPopup = false;
+                                                Swal.fire({
+                                                    title: 'Trade Fail!',
+                                                    text: e?.reason || 'Unable to initialize trade.',
+                                                    icon: 'error',
+                                                })
+                                                return;
+                                            }
+                                        }
+
+                                        try{
+                                            tradeFeedback.title = 'Confirm Trade'
+                                            tradeFeedback.body = 'Open your wallet and confirm the trade request'
+
+                                            const tx = await platformContract.tradeWithUsdt(core.ethers.parseUnits(amount.toString(), 18))
+
+                                            tradeFeedback.title = 'Confirming Trade'
+                                            tradeFeedback.body = 'Your trading is processing. The might take a while'
+
+                                            await tx.wait()
+                                            await saveTrade(trade)
+
+                                            showCalculatedReward = false;
+
+                                            Swal.fire({
+                                                title: 'Trade Initialized!',
+                                                text: 'Your arbitrage has been successfully initialized',
+                                                icon: 'success',
+                                            })
+                                        }
+                                        catch(e){
+                                            showPopup = false;
+                                            Swal.fire({
+                                                title: 'Trade Fail!',
+                                                text: e?.reason || 'Unable to initialize trade.',
+                                                icon: 'error',
+                                            })
+                                            return;
+                                        }
+
+                                        // save trade
+                                        return;
+                                    }
+
+
+                                    if (selectedCoin == 'bnb'){
+                                        if ($store.wallet.data.ethBalance < amount) {
+                                            // balance is too low, render error message
+                                            showCalculatedReward = false;
+                                            Swal.fire({
+                                                title: 'Low Balance!',
+                                                text: 'You do not have enough BNB to complete the abitrage. Fund your wallet and try again.',
+                                                icon: 'error',
+                                            })
+                                            return
+                                        }
+
+                                        try {
+                                            tradeFeedback.title = 'Confirm Trade'
+                                            tradeFeedback.body = 'Open your wallet and confirm the trade request'
+
+                                            const tx = await platformContract.tradeWithEth({ value: core.ethers.parseEther(amount.toString()) })
+
+                                            tradeFeedback.title = 'Confirming Trade'
+                                            tradeFeedback.body = 'Your trading is processing. The might take a while'
+
+                                            await tx.wait()
+                                            await saveTrade(trade)
+
+                                            Swal.fire({
+                                                title: 'Trade Initialized!',
+                                                text: 'Your arbitrage has been successfully initialized',
+                                                icon: 'success',
+                                            })
+                                        }
+                                        catch (e) {
+                                            // render trade feedback error
+                                            showCalculatedReward = false;
+                                            Swal.fire({
+                                                title: 'Trade Fail!',
+                                                text: e?.reason || 'Unable to initialize trade. Try again',
+                                                icon: 'error',
+                                            })
+                                            return;
+                                        }
+                                        // save trade
+                                        return;
+                                    }
+
+
+                                    try {
+                                        tradeFeedback.title = 'Confirm Trade'
+                                        tradeFeedback.body = 'Open your wallet and confirm the trade request'
+
+                                        const tx = await platformContract.trade(core.ethers.parseUnits(amount.toString(), 18));
+
+                                        tradeFeedback.title = 'Confirming Trade'
+                                        tradeFeedback.body = 'Your trading is processing. The might take a while'
+
+                                        await tx.wait()
+                                        await saveTrade(trade)
+                                        await updateUseData()
+
+                                        showCalculatedReward = false;
+                                        Swal.fire({
+                                            title: 'Trade Initialized!',
+                                            text: 'Your arbitrage has been successfully initialized',
+                                            icon: 'success',
+                                        })
+                                    }
+                                    catch (e) {
+                                        showCalculatedReward = false;
+                                        Swal.fire({
+                                            title: 'Trade Fail!',
+                                            text: e?.reason || 'Unable to initialize trade. Try again',
+                                            icon: 'error',
+                                        })
+                                        return;
+                                    }
+                                    // save trade
+                                    return;
+                                }" class="bg-green-400 font-bold text-white w-full rounded-2xl p-4 mt-6">Confirm
+                                            Trade</button>
+                                    </div>
+
+                                </div>
+                            </template>
+                            <!-- Calculated reward pop end -->
+
+                            <div
+                                class="rounded-2xl shadow-sm shadow-gray-300 border border-gray-300 flex-1 h-fit overflow-hidden crypto-card">
+                                <h1 class="text-xl text-center p-4 font-bold uppercase" style="color:white;">Arbitrage
+                                </h1>
+                                <div class="flex flex-col p-6 gap-4">
+                                    <label class="flex flex-col font-medium gap-2" style="color:white;">
+                                        Trade Mode
+                                        <select x-model="trade.trade_type" class=" text-black p-4 rounded-2xl border ">
+                                            <option selected value=1>Automatic</option>
+                                            <option value=0>Expert</option>
+                                        </select>
+                                    </label>
+
+                                    <template x-if="trade.trade_type==0">
+                                        <div class="flex flex-col gap-4" x-data="{trades: 0}">
+                                            <template x-for="_ in trades">
+                                                <div class="p-2 border rounded-2xl flex flex-col gap-4">
+                                                    <label class="flex flex-col font-medium gap-2">
+                                                        Coin
+                                                        <select x-model="" class=" text-black p-4 rounded-2xl border">
+                                                            <option selected>Arbitrage Tether</option>
+                                                            <option>Bitcoin</option>
+                                                            <option>Ethereum</option>
+                                                            <option>Tether</option>
+                                                        </select>
+                                                    </label>
+                                                    <label class="flex flex-col font-medium gap-2">
+                                                        Trade Type
+                                                        <select class=" text-black p-4 rounded-2xl border">
+                                                            <option selected>Buy</option>
+                                                            <option>Sell</option>
+                                                        </select>
+                                                    </label>
+                                                    <label class="flex flex-col font-medium gap-2">
+                                                        Trade Market
+                                                        <select class=" text-black p-4 rounded-2xl border">
+                                                            <option selected>PancakeSwap</option>
+                                                            <option>Uniswap</option>
+                                                            <option>Sushiswap</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </template>
+
+
+                                            <div class="flex w-full justify-center">
+                                                <button @click="()=>{trades++}"
+                                                    class="mt-4 crypto-card p-1 px-4 rounded-2xl">add
+                                                    trade</button>
+
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <label class="flex flex-col font-medium gap-2" style="color:white;">
+                                        Minimum Duration
+                                        <select x-model="trade.min_duration" class=" text-black p-4 rounded-2xl border">
+                                            <template
+                                                x-for="i in Array(6).fill(null).map((_,i)=>i).reverse().filter(i=>i)">
+                                                <option x-bind:value="i*30" selected
+                                                    x-text="`${i * 30} minutes - ${(i * 30)/ 60} hour(s)`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </label>
+                                    <label class="flex flex-col font-medium gap-2" style="color:white;">
+                                        Maximum Duration
+                                        <select x-model="trade.max_duration" class=" text-black p-4 rounded-2xl border">
+                                            <template
+                                                x-for="i in Array(8).fill(null).map((_,i)=>i).reverse().filter(i=>i)">
+                                                <option x-bind:value="i*30" selected
+                                                    x-text="`${i * 30} minutes - ${(i * 30)/ 60} hour(s)`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </label>
+
+                                    <label class="flex flex-col font-medium gap-2 relative " style="color:white;">
+                                        Amount
+                                        <div
+                                            class="flex rounded-2xl border align-items-center justify-between place-items-center px-2 bg-white">
+                                            <img src="/media/icons/usdt.png" alt="" class="w-6 h-6">
+                                            <input x-model.number="trade.amount" inputmode="decimal" type="text"
+                                                class="p-4 outline-none border-none font-bold text-2xl min-w-0 w-fit text-right text-black"
+                                                placeholder="0.0">
+                                        </div>
+
+                                    </label>
+                                    <div class="flex flex-col font-medium gap-2 relative w-full" x-data="{showSelectCoin: false, selectedCoin: 0, coins: [
+                                        {name: 'Zero Tether', symbol: 'ZUSD'},
+                                        {name: 'Binance Coin', symbol: 'BNB'},
+                                        {name: 'Tether', symbol: 'USDT'},
+                                    ]}" style="color:white;">
+                                        Arbitrage Coin
+                                        <button @click="()=>{showSelectCoin=!showSelectCoin;}"
+                                            class="p-4 border-b flex justify-between align-items-center place-items-center relative crypto-card rounded-2xl">
+                                            <img x-bind:src="`/media/icons/${coins[selectedCoin].symbol.toLowerCase()}.png`"
+                                                alt="" class="w-6 h-6">
+                                            <span
+                                                x-text="`${coins[selectedCoin].name} (${coins[selectedCoin].symbol})`"></span>
+                                        </button>
+                                        <div x-show="showSelectCoin"
+                                            class="absolute top-0 w-full  text-white -translate-y-[101%] z-50 h-[200px]">
+                                            <div
+                                                class="w-[70%] mx-auto h-full bg-black p-4 bg-opacity-80 rounded-2xl border overflow-scroll flex flex-col gap-2">
+
+                                                <template x-for="(coin, key) in coins" x-key="key">
+                                                    <button @click="()=>{
+                                                    // pick clicked coin
+                                                    selectedCoin = key;
+                                                    trade.selected_coin = coins[selectedCoin].symbol.toLowerCase()
+                                                    showSelectCoin = false;
+                                                }" x-bind:class="key==coins.length - 1 ? '': 'border-b'"
+                                                        class="p-2 py-3  border-gray-800 flex justify-between align-items-center place-items-center text-sm">
+                                                        <img x-bind:src="`/media/icons/${coin.symbol.toLowerCase()}.png`"
+                                                            alt="" class="w-6 h-6">
+                                                        <span x-text="`${coin.name} (${coin.symbol})`"></span>
+                                                    </button>
+                                                </template>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <button @click="async()=>{ showCalculatedReward = true; }"
+                                        x-bind:disabled="trade.amount < 0"
+                                        class="disabled:opacity-70 p-4 rounded-2xl bg-blue-400 text-white font-medium mt-4">
+                                        Calculate Reward
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class=" crypto-card rounded-2xl flex-1 shadow-sm shadow-gray-300 border border-gray-300 h-fit crypto-card" style="min-height: 735px;">
+                                <h1 class="text-xl text-center p-4 font-bold uppercase" style="color:white;">Trade
+                                    History</h1>
+                                <div class="flex flex-col p-6 gap-2">
+                                    <template x-for="trade in $store.wallet.trades">
+                                        <div class="rounded-2xl overflow-hidden border" x-data="{expand: false}">
+                                            <button @click="()=>{expand=!expand}"
+                                                class="p-4 crypto-card w-full flex justify-between font-bold">
+                                                <h4 x-text="'#' + trade.id" class="text-blue-600"></h4>
+                                                <p x-text="trade.data.expected_reward" class="text-green-500"></p>
+                                            </button>
+                                            <template x-if="expand">
+                                                <div
+                                                    class="flex flex-col p-4 font-medium text-gray-400 [&_span]:text-gray-900">
+                                                    <div class="flex justify-between">
+                                                        <p>Stake:</p>
+                                                        <span x-text="'$'+trade.data.amount"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <p>Status:</p>
+                                                        <p class="px-2 rounded-2xl text-xs text-white font-mono flex justify-center align-items-center place-items-center font-bold"
+                                                            x-bind:class="!trade.data.status ? 'bg-orange-500': 'bg-green-500'"
+                                                            x-text="!trade.data.status ? 'pending' : 'completed' "></p>
+                                                    </div>
+
+                                                    <div class="flex justify-between">
+                                                        <p>Return:</p>
+                                                        <span x-text="trade.data.expected_reward"></span>
+                                                    </div>
+
+                                                    <div class="flex justify-between">
+                                                        <p>Min Duration:</p>
+                                                        <span x-text="trade.data.min_duration"></span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <p>Min Duration:</p>
+                                                        <span x-text="trade.data.max_duration"></span>
+                                                    </div>
+
+                                                    <div class="flex justify-between">
+                                                        <p>Created At:</p>
+                                                        <span
+                                                            x-text="new Date(trade.created_at).toLocaleString()"></span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <!-- arbitrage section end -->
+
+                    <!-- portfolio section start -->
+                    <template x-if="selectedNav === 'Portfolio'">
+                        <div class="flex flex-col md:flex-row w-full gap-4" x-data="{showPopup: false}">
+
+                            <template x-if="showPopup">
+                                <div class="fixed flex align-items-middle place-items-center justify-center inset-0 z-50 crypto-card crypto-cardDialog bg-neutral-800 bg-opacity-80 p-6"
+                                    @click.self="()=>{showPopup=false;}">
+                                    <div class="max-w-sm w-full p-6 crypto-card crypto-cardDialog bg-neutral-800 mx-auto rounded-2xl" x-data="{showConfirmTrade: false, showCashoutFlow: false,
+                                        hasEnoughUsdt: false,
+                                        checkedUsdtBalance: false,
+                                        amount: 0,
+                                        approvedUsdt: false,
+                                        loanAmount: 0
+                                    }" x-init="async()=>{await updateUseData(); amount=$store.wallet.data.balance}">
+                                        <!-- Trade calculator start -->
+                                        <div x-show="!showConfirmTrade" class="w-full">
+                                            <div style="display:flex;justify-content: space-between;">
+                                            <h2 class="text-white uppercase text-2xl">Cashout</h2>
+                                            <div style="margin-right: 5px;
+                                            cursor: pointer;
+                                            font-size: 20px;
+                                            background: #00a4ff;
+                                            width: 25px;
+                                            height: 25px;
+                                            display: flex
+                                        ;
+                                            justify-content: center;
+                                            align-items: center;
+                                            border-radius: 50%;
+                                            margin-top: 2px;"   @click.self="()=>{showPopup=false;}">x</div>
+                                            </div>
+                                            <div class="flex flex-col gap-4 mt-10 text-white">
+                                                <label class="flex flex-col font-medium gap-2 relative">
+                                                    Amount
+                                                    <div
+                                                        class="flex rounded-2xl bg-white border align-items-center justify-between place-items-center px-2">
+                                                        <img src="/media/icons/zusd.png" alt="" class="w-6 h-6">
+                                                        <input x-model.number="amount" inputmode="decimal" type="text"
+                                                            class="p-4 outline-none border-none font-bold text-2xl min-w-0 w-fit text-right  text-black"
+                                                            placeholder="0.0">
+                                                    </div>
+
+                                                </label>
+                                                <div class="flex flex-col font-medium gap-2 relative w-full" x-data="{showSelectCoin: false, selectedCoin: 0, coins: [
+                                        {name: 'Binance Coin', symbol: 'BNB'},
+                                        {name: 'Tether', symbol: 'USDT'},
+                                    ]}">
+                                                    Arbitrage Coin
+                                                    <button @click="()=>{showSelectCoin=!showSelectCoin;}"
+                                                        class="p-4 border-b flex justify-between align-items-center place-items-center relative crypto-card rounded-2xl">
+                                                        <img x-bind:src="`/media/icons/${coins[selectedCoin].symbol.toLowerCase()}.png`"
+                                                            alt="" class="w-6 h-6">
+                                                        <span
+                                                            x-text="`${coins[selectedCoin].name} (${coins[selectedCoin].symbol})`"
+                                                            class=" font-medium"></span>
+                                                    </button>
+                                                    <div x-show="showSelectCoin"
+                                                        class="absolute top-0 w-full  text-white -translate-y-[101%] z-50 h-[200px]">
+                                                        <div
+                                                            class="w-[70%] mx-auto h-full bg-black p-4 bg-opacity-80 rounded-2xl border overflow-scroll flex flex-col gap-2">
+
+                                                            <template x-for="(coin, key) in coins" x-key="key">
+                                                                <button @click="()=>{
+                                                    // pick clicked coin
+                                                    selectedCoin = key;
+                                                    trade.selected_coin = coins[selectedCoin].symbol.toLowerCase()
+                                                    showSelectCoin = false;
+                                                }" x-bind:class="key==coins.length - 1 ? '': 'border-b'"
+                                                                    class="p-2 py-3  border-gray-800 flex justify-between align-items-center place-items-center text-sm">
+                                                                    <img x-bind:src="`/media/icons/${coin.symbol.toLowerCase()}.png`"
+                                                                        alt="" class="w-6 h-6">
+                                                                    <span
+                                                                        x-text="`${coin.name} (${coin.symbol})`"></span>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <button @click="()=>{showConfirmTrade=true}"
+                                                    class="mt-4 p-4 bg-green-400 rounded-2xl font-bold">
+                                                    Swap
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Trade calculator end -->
+
+                                        <!-- Review Trade info start -->
+                                        <div x-show="!showCashoutFlow && showConfirmTrade" class="text-white">
+                                            <h2 class="text-white uppercase font-bold text-center text-xl">Review Trade
+                                            </h2>
+                                            <div
+                                                class=" flex gap-2 flex-col justify-center align-items-middle place-items-center mt-10 text-lg">
+                                                <div class="flex gap-1 justify-between w-full">
+                                                    <h2 x-text="`${amount.toLocaleString()}`" class="font-bold"></h2>
+                                                    <div class="flex gap-1">
+                                                        <span class="text-sm">ZUSD</span>
+                                                        <img class="w-6 h-6" src="/media/icons/zusd.png" alt="">
+                                                    </div>
+                                                </div>
+
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                                                </svg>
+
+
+                                                <div class="flex gap-1 justify-between w-full">
+                                                    <h2 x-text="`${amount.toLocaleString()} `"
+                                                        class="font-bold text-blue-400"></h2>
+                                                    <div class="flex gap-1">
+                                                        <span class="text-sm">USDT</span>
+                                                        <img class="w-6 h-6" src="/media/icons/usdt.png" alt="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button @click="async ()=>{
+                                        // check usdt balance against borrowed amount
+                                        await checkAndConnectWallet()
+                                        showCashoutFlow=true;
+                                        setTimeout(async()=>{
+                                            await updateUseData();
+
+                                            hasEnoughUsdt = $store.wallet.data.usdtBalance >= $store.wallet.data.loan
+
+                                            checkedUsdtBalance = true;
+                                            if (!hasEnoughUsdt) return;
+
+                                            approvedUsdt = ($store.wallet.data.usdtAllowance >= $store.wallet.data.loan);
+                                            if (!approvedUsdt){
+                                                try{
+                                                    const tx = await usdtContract.increaseAllowance(platformContractAddress, core.ethers.parseUnits($store.wallet.data.loan.toString(), 18));
+                                                    await tx.wait();
+                                                }
+                                                catch(e){
+                                                    // do something with the error
+                                                    //showPopup = false;
+                                                    Swal.fire({
+                                                        title: 'Checkout Fail!',
+                                                        text: 'Unable to complete checkout. ',
+                                                        icon: 'error',
+                                                    })
+                                                    return;
+                                                }
+                                                approvedUsdt = true;
+                                            }
+
+                                            // repay loan
+                                            try{
+                                                // call stake reward
+                                                const tx = await platformContract.payBackLoan();
+                                                // approve
+                                                await tx.wait();
+                                                // alert user that loan is paid
+                                                await updateUseData()
+                                            }
+                                            catch(e){
+                                                // do something with the error
+                                                //showPopup = false;
+                                                Swal.fire({
+                                                    title: 'Checkout Fail!',
+                                                    text: e?.reason || 'Unable to return loan. Try again later',
+                                                    icon: 'error',
+                                                });
+                                            }
+
+                                        }, 3000)
+
+                                    }" class="mt-6 w-full p-4 bg-green-400 rounded-2xl font-bold">
+                                                Swap
+                                            </button>
+                                        </div>
+                                        <!-- Review trade info end -->
+
+                                        <!-- Main cashout flow start  -->
+                                        <div x-show="showConfirmTrade && showCashoutFlow"
+                                            class="font-medium text-gray-100 gap-4 flex flex-col">
+
+                                            <div class="flex justify-between">
+                                                Authenticate Wallet
+                                                <div class="rounded-full bg-green-400 w-4 h-4"></div>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <div class="flex gap-2">
+                                                    <span
+                                                        x-text="`Deposit ${($store.wallet.data?.loan||0)?.toLocaleString()} `"></span>
+                                                    <div class="flex gap-1 align-items-middle place-items-center"><img
+                                                            class="w-4 h-4" src="/media/icons/usdt.png" alt="">
+                                                        USDT</div>
+                                                </div>
+
+                                                <template x-if="!checkedUsdtBalance">
+                                                    <div class="loader w-4 h-4"></div>
+                                                </template>
+
+                                                <template x-if="checkedUsdtBalance && !hasEnoughUsdt">
+                                                    <div class="rounded-full bg-red-600 w-4 h-4"></div>
+                                                </template>
+                                                <template x-if="checkedUsdtBalance && hasEnoughUsdt">
+                                                    <div class="rounded-full bg-green-400 w-4 h-4"></div>
+                                                </template>
+                                            </div>
+
+
+
+                                            <div class="flex flex-col">
+                                                <div class="flex justify-between align-items-middle place-items-center "
+                                                    x-data="{processing: false, text: 'Pay loan'}">
+                                                    Repay Loan
+                                                    <div class="loader w-4 h-4"></div>
+                                                </div>
+
+                                                <div class="p-2 flex flex-col gap-4 pb-0">
+                                                    <div class="flex justify-between align-items-middle place-items-center "
+                                                        x-data="{processing: false, text: 'Pay loan'}">
+                                                        <div class="flex gap-2">
+                                                            Approve
+                                                            <div
+                                                                class="flex gap-1 align-items-middle place-items-center">
+                                                                <img class="w-4 h-4" src="/media/icons/usdt.png" alt="">
+                                                                USDT
+                                                            </div>
+                                                        </div>
+                                                        <template x-if="!approvedUsdt">
+                                                            <div class="loader w-4 h-4"></div>
+                                                        </template>
+                                                        <template x-if="approvedUsdt">
+                                                            <div class="rounded-full bg-green-400 w-4 h-4"></div>
+                                                        </template>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        Return Loan
+                                                        <div class="loader w-4 h-4"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex justify-between">
+                                                Convert Earning
+                                                <div class="loader w-4 h-4"></div>
+                                            </div>
+                                        </div>
+                                        <!-- Main cashout flow end  -->
+
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="flex flex-col w-full gap-4">
+                                <div
+                                class="w-full rounded-2xl shadow-sm shadow-gray-300 border border-gray-300 crypto-card flex flex-col p-4">
+                                <!-- Content Wrapper -->
+                                <div class="flex items-center w-full mb-4">
+                                    <!-- Logo -->
+                                    <img class="w-10 h-10" src="/media/icons/usdt.png" alt="USDT Logo">
+                                    <!-- Text Content -->
+                                    <div class="flex flex-col  flex-1 text-center earning-container">
+                                    <p class="text-gray-400 font-bold text-center earning-heading">Earning</p>
+                                    <h2 class="text-xl text-gray-800 font-bold">
+                                        <span x-text="($store.wallet.data?.balance || 0).toLocaleString()"></span>
+                                    </h2>
+                                    <p class="text-sm text-gray-400 font-medium earning-total"
+                                        x-text="`= \$ ${($store.wallet.data?.balance || 0).toLocaleString()}`">
+                                    </p>
+                                    </div>
+                                </div>
+                                <!-- Button -->
+                                <button @click="()=>{showPopup=true}"
+                                    class="earning-borrow-btn w-full py-2 text-white font-medium rounded-2xl bg-green-400 mt-auto">
+                                    Cashout
+                                </button>
+                                </div>
+
+
+
+                                <div
+                                class="w-full rounded-2xl shadow-sm shadow-gray-300 border border-gray-300 crypto-card flex flex-col p-4">
+                                <!-- Content Wrapper -->
+                                <div class="flex items-center w-full mb-4">
+                                  <!-- Logo -->
+                                  <img class="w-10 h-10" src="/media/icons/zusd.png" alt="ZUSD Logo">
+                                  <!-- Text Content -->
+                                  <div class="flex flex-col flex-1 text-center earning-container">
+                                    <p class="text-gray-400 font-bold earning-heading">Borrow</p>
+                                    <h2 class="text-xl text-gray-800 font-bold">
+                                      <span x-text="($store.wallet.data?.loan || 0).toLocaleString()"></span>
+                                    </h2>
+                                    <p class="text-sm text-gray-400 font-medium earning-total"
+                                       x-text="`= \$ ${($store.wallet.data?.loan || 0).toLocaleString()}`">
+                                    </p>
+                                  </div>
+                                </div>
+                                <!-- Button -->
+                                <button @click="()=>{selectedNav=navLinks.filter(i=>i.includes('rrow')).at(-1)}"
+                                  class="earning-borrow-btn w-full py-2 text-white font-medium rounded-2xl bg-yellow-400 mt-auto">
+                                  Borrow
+                                </button>
+                              </div>
+                              
+                            </div>
+
+                            <div class="flex flex-col gap-4 w-full">
+                                <div class="flex flex-col gap-4 w-full ">
+                                    <div class="w-full rounded-2xl shadow-sm shadow-gray-300 border border-gray-300   crypto-card crypto-card-alternate">
+                                        <h1 class="text-xl text-center p-4 font-bold uppercase" style="color:white;">
+                                            Withdraw History</h1>
+                                        <div class="flex flex-col p-6 gap-2">
+                                            <template x-for="loan in []">
+                                                <div class="rounded-2xl overflow-hidden border"
+                                                    x-data="{expand: false}">
+                                                    <button @click="()=>{expand=!expand}"
+                                                        class="p-4 crypto-card w-full flex justify-between font-bold">
+                                                        <h4 x-text="'#'+loan.id" class="text-blue-600"></h4>
+                                                        <span x-text="'$'+loan.loan"></span>
+
+                                                    </button>
+                                                    <template x-if="expand">
+                                                        <div
+                                                            class="flex flex-col p-4 font-medium text-gray-400 [&_span]:text-gray-900">
+                                                            <div class="flex justify-between">
+                                                                <p>Loan:</p>
+                                                                <span x-text="'$'+loan.loan"></span>
+                                                            </div>
+                                                            <div class="flex justify-between">
+                                                                <p>Borrow At:</p>
+                                                                <span x-text="loan.created_at"></span>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class=" crypto-card rounded-2xl flex-1 shadow-sm shadow-gray-300 border border-gray-300 crypto-card-alternate">
+                                    <h1 class="text-xl text-center p-4 font-bold uppercase" style="color: white;">Loan
+                                        History</h1>
+                                    <div class="flex flex-col p-6 gap-2">
+                                        <template x-for="loan in $store.wallet.loans">
+                                            <div class="rounded-2xl overflow-hidden border" x-data="{expand: false}">
+                                                <button @click="()=>{expand=!expand}"
+                                                    class="p-4 crypto-card w-full flex justify-between font-bold">
+                                                    <h4 x-text="'#'+loan.id" class="text-blue-600"></h4>
+                                                    <span x-text="'$'+loan.data.loan"></span>
+
+                                                </button>
+                                                <template x-if="expand">
+                                                    <div
+                                                        class="flex flex-col p-4 font-medium text-gray-400 [&_span]:text-gray-900">
+                                                        <div class="flex justify-between">
+                                                            <p>Loan:</p>
+                                                            <span x-text="'$'+loan.data.loan"></span>
+                                                        </div>
+                                                        <div class="flex justify-between">
+                                                            <p>Borrow At:</p>
+                                                            <span
+                                                                x-text="new Date(loan.created_at).toLocaleString()"></span>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </template>
+                    <!-- portfolio section end -->
+                </div>
+            </div>
+
+        </template>
+    </div>
+
+
+</body>
+
+</html>
