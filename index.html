@@ -355,10 +355,12 @@
                                             <div class="crypto-card w-full p-4 rounded-2xl mb-4 bg-gray-800 text-white" x-data="{ open: false }">
                                               <button 
                                                 @click="open = !open" 
+                                                
                                                 class="flex justify-between items-center w-full"
                                               >
                                                 <h3 class="text-lg font-bold text-left" x-text="faq.question"></h3>
                                                 <svg 
+                                                style="min-width:20px;margin-left: 5px;max-width: 20px;"
                                                 xmlns="http://www.w3.org/2000/svg" 
                                                 class="h-6 w-6 transform transition-transform duration-300" 
                                                 :class="{ 'rotate-180': open }" 
