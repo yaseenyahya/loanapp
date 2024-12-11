@@ -277,7 +277,7 @@
                     class="md:hidden w-full justify-between flex overflow-hidden gap-1 z-50 px-4 mt-2 text-gray-400 font-bold">
                     <template x-for="navLink in navLinks" x-key="navLink">
                         <button @click="()=>{navigate(navLink); showMenu=false;}"
-                            :class="selectedNav == navLink ? 'border-b border-b-2 text-green-400': ''"
+                            :class="selectedNav == navLink ? 'border-b border-b-2 text-blue-400': ''"
                             class="p-2 border-blue-400" x-text="navLink"></button>
                     </template>
                 </div>
